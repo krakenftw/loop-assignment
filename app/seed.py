@@ -5,6 +5,7 @@ from sqlalchemy import create_engine,text
 from models import Base, Store, StoreStatus, StoreBusinessHours
 from dotenv import load_dotenv
 import os
+import pytz
 
 load_dotenv()
 
@@ -21,6 +22,10 @@ def parse_csv(file_name):
         return list(reader)
 
 def create_store_if_not_exists(db: Session, store_id: int, timezone: str = "America/Chicago"):
+    try:
+        pytz.timezone(timezone)
+    except pytz.UnknownTimeZoneError:
+        timezone = "America/Chicago"
     store = db.query(Store).filter(Store.id == store_id).first()
     if not store:
         store = Store(id=store_id, timezone=timezone)
@@ -68,13 +73,13 @@ def seed_store_hours(db: Session):
 def seed_store_status(db: Session):
     
     data = parse_csv("store_status")
-    # for row in data[1:]: 
-    #     store_id = int(row[0])
-    #     timezone = row[1] if row[1] else "America/Chicago"
-    #     try:
-    #         create_store_if_not_exists(db, store_id, timezone)
-    #     except Exception as e:
-    #         print(f"Error seeding store {store_id}: {e}")
+    for row in data[1:]: 
+        store_id = int(row[0])
+        timezone = row[1] if row[1] else "America/Chicago"
+        try:
+            create_store_if_not_exists(db, store_id, timezone)
+        except Exception as e:
+            print(f"Error seeding store {store_id}: {e}")
     batch_size = 100000
     status_entries = []
     db.execute(text("TRUNCATE TABLE store_statuses"))
@@ -106,10 +111,10 @@ def seed_store_status(db: Session):
 def main():
     db = SessionLocal()
     try:
-        # print("Seeding stores...")
-        # seed_store(db)
-        # print("Seeding store hours...")
-        # seed_store_hours(db)
+        print("Seeding stores...")
+        seed_store(db)
+        print("Seeding store hours...")
+        seed_store_hours(db)
         print("Seeding store status...")
         seed_store_status(db)
         print("Seeding completed successfully!")
