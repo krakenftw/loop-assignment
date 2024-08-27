@@ -9,7 +9,6 @@
 ```
 git clone https://github.com/your-username/store-status-assignment.git
 cd store-status-assignment
-Set Up the Environment:
 ```
 
 Create a virtual environment and activate it:
@@ -17,9 +16,9 @@ Create a virtual environment and activate it:
 ```
 python -m venv venv
 source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-Install Dependencies:
-```
 
+```
+Install Dependencies:
 ```
 pip install -r requirements.txt
 ```
