@@ -1,5 +1,5 @@
-#How to Start the Project
-##Prerequisites
+# How to Start the Project
+Prerequisites
  - Python 3.8+
  - PostgreSQL
  - Virtual environment (optional but recommended)
